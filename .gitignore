@@ -179,3 +179,5 @@ tmp_data/
 wandb/
 test/
 catboost_info/
+
+.env
