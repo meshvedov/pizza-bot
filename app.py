@@ -41,7 +41,7 @@ if "chat_history" not in st.session_state:
 
 # Подключение к Qwen (LM Studio)
 # llm = ChatOpenAI(base_url="http://localhost:1234/v1", api_key="lm-studio", model="qwen3-30b")
-openai_api_key='sk-al8Dzmdmj-xJy13SoUR5aQ'
+openai_api_key=''
 embeddings = OpenAIEmbeddings(api_key=openai_api_key, model='text-embedding-3-small', 
                                     base_url="https://api.vsellm.ru/")
 db = FAISS.load_local("notebooks/dodo_faiss_index", embeddings, allow_dangerous_deserialization=True)

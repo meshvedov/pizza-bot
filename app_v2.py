@@ -12,7 +12,7 @@ load_dotenv()
 def main():
     st.title("Dodo Pizza Bot")
 
-    openai_api_key='sk-al8Dzmdmj-xJy13SoUR5aQ'
+    openai_api_key=''
     embeddings = OpenAIEmbeddings(api_key=openai_api_key, model='text-embedding-3-small', 
                                         base_url="https://api.vsellm.ru/")
     db = FAISS.load_local("notebooks/dodo_faiss_index", embeddings, allow_dangerous_deserialization=True)
