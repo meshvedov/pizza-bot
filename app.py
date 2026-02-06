@@ -2,11 +2,16 @@ import streamlit as st
 from langchain_openai import ChatOpenAI
 # Импортируй свои ранее созданные OrderState, retriever и prompt здесь
 from typing import List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, SecretStr
 from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
+
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 
 class OrderItem(BaseModel):
     name: str = Field(description="Название товара (пицца, напиток и т.д.)")
@@ -41,14 +46,19 @@ if "chat_history" not in st.session_state:
 
 # Подключение к Qwen (LM Studio)
 # llm = ChatOpenAI(base_url="http://localhost:1234/v1", api_key="lm-studio", model="qwen3-30b")
-openai_api_key=''
-embeddings = OpenAIEmbeddings(api_key=openai_api_key, model='text-embedding-3-small', 
-                                    base_url="https://api.vsellm.ru/")
+openai_api_key=os.getenv("OPENAI_API_KEY")
+if not openai_api_key:
+    raise ValueError("OPENAI_API_KEY is not set in environment variables.")
+
+embeddings = OpenAIEmbeddings(#api_key=SecretStr(openai_api_key), 
+                              model='text-embedding-3-small', 
+                              base_url="https://api.vsellm.ru/")
 db = FAISS.load_local("notebooks/dodo_faiss_index", embeddings, allow_dangerous_deserialization=True)
 retriever = db.as_retriever()
 
-llm = ChatOpenAI(api_key=openai_api_key, model='gpt-4o-mini',
-                    base_url="https://api.vsellm.ru/")  
+llm = ChatOpenAI(#api_key=SecretStr(openai_api_key), 
+                 model='gpt-4o-mini',
+                 base_url="https://api.vsellm.ru/")  
 
 prompt = PromptTemplate(
     input_variables=["input", "context", "current_order", "chat_history"],
